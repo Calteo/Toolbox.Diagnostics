@@ -5,22 +5,13 @@ namespace Toolbox.Diagnostics
     /// <summary>
     /// Listener that formats objects to text.
     /// </summary>
-    public class ObjectTraceTextListener : ObjectTraceListener
+    public abstract class ObjectTraceTextListener : ObjectTraceListener
     {
         /// <inheritdoc />
-        public ObjectTraceTextListener(TextWriter writer) : this(null, writer)
+        public ObjectTraceTextListener(string? name = null)
+            : base(name) 
         {
         }
-
-        /// <inheritdoc />
-        public ObjectTraceTextListener(string? name, TextWriter writer)
-            : base(name)
-        {
-            Writer = writer;
-            Template = Properties.Resources.ObjectTraceTextListenerTemplate;
-        }
-
-        public TextWriter Writer { get; }
 
         protected override void Write(TraceItem item)
         {
@@ -29,6 +20,7 @@ namespace Toolbox.Diagnostics
                 action(item);
             }
         }
+        protected abstract void AppendLine(string text);
 
         #region Template
         private const string AttributeTemplate = "template";
@@ -75,7 +67,7 @@ namespace Toolbox.Diagnostics
                 {
                     var parameterMatches = PatternProperties.Matches(line);
                     if (parameterMatches.Count == 0)
-                        TemplateLines.Add(t => Writer.WriteLine(line));
+                        TemplateLines.Add(t => AppendLine(line));
                     else
                     {
                         var properties = new HashSet<string>(typeof(TraceItem).GetProperties().Select(p => p.Name));
@@ -98,7 +90,7 @@ namespace Toolbox.Diagnostics
         private void WriteProperties(TraceItem item, string template)
         {
             var text = PatternProperties.Replace(template, m => string.Format("{0" + m.Groups["option"].Value + "}", item.GetType().GetProperty(m.Groups["parameter"].Value)?.GetValue(item)));
-            Writer.WriteLine(text);
+            AppendLine(text);
         }
 
         private void WriteObjects(TraceItem item, string options, string prefix, string suffix)
@@ -108,7 +100,7 @@ namespace Toolbox.Diagnostics
 
         private void WriteCapture(TraceCapture capture, string prefix, string suffix)
         {
-            Writer.WriteLine($"{prefix}{capture.Name} = {capture.Text}");
+            AppendLine($"{prefix}{capture.Name} = {capture.Text}");
             capture.Children?.ForEach(c => WriteCapture(c, prefix + "    ", suffix));
         }
 

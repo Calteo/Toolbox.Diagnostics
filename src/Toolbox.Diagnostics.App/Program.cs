@@ -37,7 +37,7 @@ namespace Toolbox.Diagnostics.App
 		{
             var source = CreateSource();
             
-            source.Listeners.Add(new ObjectTraceTextListener("object", Console.Out));
+            source.Listeners.Add(new ObjectTraceTextWriterListener("object", Console.Out));
 
             source.TraceInformation("simple information");
 
