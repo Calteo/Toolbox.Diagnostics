@@ -1,11 +1,12 @@
 ﻿using System.Diagnostics;
 using System.Reflection;
+using Toolbox.Diagnostics.Diagnostics;
 
 namespace Toolbox.Diagnostics
 {
     public class TraceItem
     {
-        public TraceItem(string source, TraceEventType eventType, int id, int threadId, int processId, string text, StackFrame caller, TraceCapture[] objects)
+        public TraceItem(string source, TraceEventType eventType, int id, int threadId, int processId, string text, StackFrame[] frames, TraceCapture[] objects)
         {
             Source = source;
             EventType = eventType;
@@ -13,7 +14,7 @@ namespace Toolbox.Diagnostics
             ThreadId = threadId;
             ProcessId = processId;
             Text = text;
-            Caller = caller;
+            Frames = frames;
             Objects = objects;
         }
 
@@ -24,21 +25,15 @@ namespace Toolbox.Diagnostics
         public int ThreadId { get; }
         public int ProcessId { get; }
         public string Text { get; }
-        public StackFrame Caller { get; }
-
+        public StackFrame Caller => Frames[0];
+        public StackFrame[] Frames { get; }
         public MethodBase? Method => Caller.GetMethod();
-        public string MethodSignature
-        {
-            get
-            {
-                var method = Method;
-                var returnType = "";
-                if (method is MethodInfo methodInfo)
-                    returnType = $"{methodInfo.ReturnType.Name} ";
+        public string MethodSignature => Caller.ToMethodString(false);
+        public string MethodName => Method?.Name ?? Caller.ToString();
+        public string MethodReturnType => (Method is MethodInfo methodInfo) ? methodInfo.ReturnType.Name : "<no return type>";
+        public string ClassName => Method?.DeclaringType?.Name ?? "<no class>";
+        public string ClassFullName => Method?.DeclaringType?.FullName ?? "<no class>";
 
-                return $"{returnType}{method?.Name ?? Caller.ToString()}()";
-            }
-        }
         public TraceCapture[] Objects { get; internal set; }
     }
 }

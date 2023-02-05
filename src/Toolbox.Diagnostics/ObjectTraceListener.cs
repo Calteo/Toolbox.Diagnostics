@@ -176,7 +176,7 @@ namespace Toolbox.Diagnostics
                     Environment.CurrentManagedThreadId,
                     Environment.ProcessId,
                     string.Format(format ?? "", args ?? Array.Empty<object>()),
-                    frames[0],
+                    frames,
                     Array.Empty<TraceCapture>()
                 ));
         }
@@ -227,7 +227,7 @@ namespace Toolbox.Diagnostics
                     Environment.CurrentManagedThreadId,
                     Environment.ProcessId,
                     data == null ? "no objects" : $"{data.Length} object(s)",
-                    frames[0],
+                    frames,
                     captures
                 ));
         }

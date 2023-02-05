@@ -1,4 +1,8 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Diagnostics;
+using System.Reflection;
+using System.Text;
+using System.Text.RegularExpressions;
+using Toolbox.Diagnostics.Diagnostics;
 
 namespace Toolbox.Diagnostics
 {
@@ -11,6 +15,7 @@ namespace Toolbox.Diagnostics
         public ObjectTraceTextListener(string? name = null)
             : base(name) 
         {
+            ParseTemplate();
         }
 
         protected override void Write(TraceItem item)
@@ -106,6 +111,11 @@ namespace Toolbox.Diagnostics
 
         private void WriteStackTrace(TraceItem item, string options, string prefix, string suffix)
         {
+            AppendLine($"{prefix}stack trace:{suffix}");
+            foreach (var frame in item.Frames)
+            {
+                AppendLine($"{prefix}  at {frame.ToMethodString()}{suffix}");
+            }
         }
 
         private static readonly Regex PatternProperties = new(@"{(?<parameter>\w+)((?<option>:[^}]+))?}", RegexOptions.Compiled);
