@@ -234,12 +234,12 @@ namespace Toolbox.Diagnostics
 
         public override void Write(string? message)
         {
-            throw new NotImplementedException();
+            TraceEvent(null, "", TraceEventType.Information, 0, message);
         }
 
         public override void WriteLine(string? message)
         {
-            throw new NotImplementedException();
+            Write(message + Environment.NewLine);
         }
 
         private Dictionary<Type, TraceConverterBase> TraceConverters { get; } = new Dictionary<Type, TraceConverterBase>();
