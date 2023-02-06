@@ -25,14 +25,21 @@ namespace Toolbox.Diagnostics
 
         private TraceCapture Capture(object obj, PropertyInfo property)
         {
-            var value = property.GetValue(obj);
-                        
-            var capture = value != null
-                ? (GetConverter(property) ?? Listener.GetConverter(value)).CaptureCore(value)
-                : new TraceCapture { Text = "<null>" };
-            capture.Name = property.Name;
+            try
+            {
+                var value = property.GetValue(obj);
 
-            return capture;
+                var capture = value != null
+                    ? (GetConverter(property) ?? Listener.GetConverter(value)).CaptureCore(value)
+                    : new TraceCapture { Text = "<null>" };
+
+                capture.Name = property.Name;
+                return capture;
+            }
+            catch (Exception exception)
+            {
+                return new TraceCapture { Name = property.Name, Text = exception.Message };
+            }                        
         }
 
         private TraceConverterBase? GetConverter(PropertyInfo property)
