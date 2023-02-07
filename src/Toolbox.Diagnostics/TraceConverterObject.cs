@@ -6,13 +6,26 @@
         {
         }
 
-        protected override TraceCapture Capture(object obj)
+        protected override TraceCapture Capture(object obj, Dictionary<object, TraceCapture> captured)
         {
-            return new TraceCapture 
+            if (captured.ContainsKey(obj))
             {
-                Text = obj.GetType().FullName ?? obj.GetType().ToString(),
-                Children = GetChildren(obj)
-            };
+                captured[obj].Referenced = true;
+                return new TraceCapture { Text = $"Ref<{captured[obj].Id}>" };
+            }
+            else
+            {
+                var capture = new TraceCapture
+                {
+                    Id = captured.Count+1,
+                    Text = obj.GetType().FullName ?? obj.GetType().ToString()                    
+                };
+                
+                captured.Add(obj, capture);
+                capture.Children = GetChildren(obj, captured);
+
+                return capture;
+            }
         }
     }
 }

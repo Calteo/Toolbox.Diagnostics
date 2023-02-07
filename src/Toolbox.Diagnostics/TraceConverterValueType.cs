@@ -18,7 +18,7 @@ namespace Toolbox.Diagnostics
 
         public string Format { get; }
 
-        protected override TraceCapture Capture(ValueType obj)
+        protected override TraceCapture Capture(ValueType obj, Dictionary<object,TraceCapture> captured)
         {
             var text = string.Format($"{{0:{Format}}}", obj);
             return new TraceCapture { Text = text };

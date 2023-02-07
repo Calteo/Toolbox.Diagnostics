@@ -8,7 +8,7 @@ namespace Toolbox.Diagnostics
         {
         }
 
-        protected override TraceCapture Capture(SecureString obj)
+        protected override TraceCapture Capture(SecureString obj, Dictionary<object, TraceCapture> captured)
         {
             return new TraceCapture { Text = $"'***'" };
         }

@@ -9,28 +9,28 @@ namespace Toolbox.Diagnostics
             Listener = listener;
         }
 
-        protected internal abstract TraceCapture CaptureCore(object obj);
+        protected internal abstract TraceCapture CaptureCore(object obj, Dictionary<object, TraceCapture> captured);
         protected internal abstract Type ConvertType { get; }
 
         protected internal ObjectTraceListener Listener { get; internal set; }
         
-        protected TraceCapture[] GetChildren(object obj)
+        protected TraceCapture[] GetChildren(object obj, Dictionary<object, TraceCapture> captured)
         {
             var properties = obj.GetType()
                                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
                                 .Where(p => p.GetCustomAttribute<NotTraceableAttribute>(true) == null);
 
-            return properties.Select(p => Capture(obj, p)).ToArray();
+            return properties.Select(p => Capture(obj, p, captured)).ToArray();
         }
 
-        private TraceCapture Capture(object obj, PropertyInfo property)
+        private TraceCapture Capture(object obj, PropertyInfo property, Dictionary<object, TraceCapture> captured)
         {
             try
             {
                 var value = property.GetValue(obj);
 
                 var capture = value != null
-                    ? (GetConverter(property) ?? Listener.GetConverter(value)).CaptureCore(value)
+                    ? (GetConverter(property) ?? Listener.GetConverter(value)).CaptureCore(value, captured)
                     : new TraceCapture { Text = "<null>" };
 
                 capture.Name = property.Name;

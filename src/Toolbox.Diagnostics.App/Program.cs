@@ -64,7 +64,13 @@ namespace Toolbox.Diagnostics.App
             {
                 password.AppendChar(c);
             }
+
             source.TraceData(TraceEventType.Critical, 49, "some password", password);
+
+            var root = new Node();
+            root.Children.AddRange(new[] { new Node(root), new Node(root) });
+
+            source.TraceData(TraceEventType.Transfer, 50, root);
 
             source.Close();
 

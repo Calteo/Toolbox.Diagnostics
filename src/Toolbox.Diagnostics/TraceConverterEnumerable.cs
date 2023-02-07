@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Toolbox.Diagnostics
 {
@@ -24,7 +25,7 @@ namespace Toolbox.Diagnostics
             return $"{type.Namespace}.{name}<{string.Join(",", type.GetGenericArguments().Select(GetTypeName))}>";
         }
 
-        protected override TraceCapture Capture(IEnumerable obj)
+        protected override TraceCapture Capture(IEnumerable obj, Dictionary<object, TraceCapture> captured)
         {
             var capture = new TraceCapture { Text = $"{GetTypeName(obj.GetType())}" };
             var children = new List<TraceCapture>();
@@ -32,7 +33,7 @@ namespace Toolbox.Diagnostics
             var index = 0;
             while (enumarator.MoveNext())
             {
-                var childCapture = Listener.GetConverter(enumarator.Current).CaptureCore(enumarator.Current);
+                var childCapture = Listener.GetConverter(enumarator.Current).CaptureCore(enumarator.Current, captured);
                 childCapture.Name = $"[{index++}]";
                 children.Add(childCapture);
                 if (index >= Listener.MaxCollectionCount)

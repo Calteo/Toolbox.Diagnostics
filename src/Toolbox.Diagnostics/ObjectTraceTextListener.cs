@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using Toolbox.Diagnostics.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Toolbox.Diagnostics
 {
@@ -104,8 +105,8 @@ namespace Toolbox.Diagnostics
         }
 
         private void WriteCapture(TraceCapture capture, string prefix, string suffix)
-        {
-            AppendLine($"{prefix}{capture.Name} = {capture.Text}");
+        {                      
+            AppendLine($"{prefix}{capture.Name} = {capture.TextAndId}");
             capture.Children?.ForEach(c => WriteCapture(c, prefix + "    ", suffix));
         }
 

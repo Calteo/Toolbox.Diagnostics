@@ -203,13 +203,14 @@ namespace Toolbox.Diagnostics
         public override void TraceData(TraceEventCache? eventCache, string source, TraceEventType eventType, int id, params object?[]? data)
         {
             var frames = GetFrames();
+            var captured = new Dictionary<object, TraceCapture>();
 
             var captures = data?.Aggregate(
                 new List<TraceCapture>(),
                 (list, obj) =>
                 {
                     var capture = obj != null
-                                    ? GetConverter(obj).CaptureCore(obj)
+                                    ? GetConverter(obj).CaptureCore(obj, captured)
                                     : new TraceCapture { Text = "<null>" };
 
                     capture.Name = $"[{list.Count}]";

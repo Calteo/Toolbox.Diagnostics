@@ -6,7 +6,7 @@
         {
         }
 
-        protected override TraceCapture Capture(string obj)
+        protected override TraceCapture Capture(string obj, Dictionary<object, TraceCapture> captured)
         {
             return new TraceCapture { Text = $"'{obj}'" };
         }
