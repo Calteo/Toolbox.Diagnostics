@@ -1,9 +1,5 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Toolbox.Diagnostics.Diagnostics;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Toolbox.Diagnostics
 {

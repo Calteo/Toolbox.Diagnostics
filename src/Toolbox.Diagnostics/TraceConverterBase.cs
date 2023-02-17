@@ -27,6 +27,8 @@ namespace Toolbox.Diagnostics
         {
             try
             {
+                System.Diagnostics.Trace.WriteLine($"{property.Name}", obj.ToString());
+
                 var value = property.GetValue(obj);
 
                 var capture = value != null

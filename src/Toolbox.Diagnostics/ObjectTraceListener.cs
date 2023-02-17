@@ -25,6 +25,7 @@ namespace Toolbox.Diagnostics
             RegisterConverter<TraceConverterString>();
             RegisterConverter<TraceConverterValueType>();
             RegisterConverter<TraceConverterSecureString>();
+            RegisterConverter<TraceConverterMemberInfo>();
 
             ObjectConverter = new TraceConverterObject(this);
             EnumerableConverter = new TraceConverterEnumerable(this);

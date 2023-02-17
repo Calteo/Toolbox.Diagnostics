@@ -72,6 +72,10 @@ namespace Toolbox.Diagnostics.App
 
             source.TraceData(TraceEventType.Transfer, 50, root);
 
+            var method = typeof(Program).GetMethod(nameof(OnHelp), System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Static);
+
+            source.TraceData(TraceEventType.Information, 78, method);
+
             source.Close();
 
             return 0;
